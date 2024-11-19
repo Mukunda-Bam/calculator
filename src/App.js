@@ -16,59 +16,67 @@ function App() {
   const [result,setResult]=useState("");
   const [history, setHistory]= useState(JSON.parse(localStorage.getItem("calculator-app-history")) || []);
 
-  const handleKeyPress = (keyCode, key)=>{
-    if(!keyCode)return
-    
-    if(!usedKeyCodes.includes(keyCode))return
-    if(numbers.includes(key)){
-      if(key==='0'){
-        if(expression.length===0)return
+  const handleKeyPress = (keyCode, key) => {
+    if (!keyCode) return;
+  
+    if (!usedKeyCodes.includes(keyCode)) return;
+  
+  
+    if (numbers.includes(key)) {
+      if (key === '0') {
+        if (expression.length === 0) return;
       }
-      calculateResult(expression + key)
-      setExpression(expression + key)
+      setExpression(expression + key);
     }
-    else if(operators.includes(key)){
-      if(!expression)return
-
-      const lastChar= expression.slice(-1)
-      if(operators.includes(lastChar))return
-      if(lastChar==='.')return
-
-         setExpression(expression +key)
+    else if (operators.includes(key)) {
+      if (!expression) return;
+  
+      const lastChar = expression.slice(-1);
+      if (operators.includes(lastChar)) return; 
+      if (lastChar === '.') return;
+  
+      setExpression(expression + key);
     }
-    
-    else if(keyCode ==='.'){
-      if(!expression)return
-      const lastChar=expression.slice(-1)
-      if(numbers.includes(lastChar))return
 
-      setExpression(expression+key);
+    else if (keyCode === 190) { 
+      if (!expression) return;
+      const lastChar = expression.slice(-1);
+      if (numbers.includes(lastChar)) return;
+      setExpression(expression + key);
     }
-    else if(keyCode===8){
-      if(!expression)return
-      calculateResult(expression.slice(0, -1))
-      setExpression(expression.slice(0, -1))
-    }
-    else if(keyCode===13){
-      if(!expression)return
-      calculateResult(expression)
 
-      const tempHistory=[...history];
-      if(tempHistory.length>20)
-      tempHistory=tempHistory.splice(0, 1);
-    tempHistory.push(expression);
-    setHistory(tempHistory);
+    else if (keyCode === 8) {
+      if (!expression) return;
+      setExpression(expression.slice(0, -1));
+      
+    }
+    else if (keyCode === 13) {
+      if (!expression) return;
+      calculateResult(expression);
+  
+      const tempHistory = [...history];
+      if (tempHistory.length > 20) tempHistory.splice(0, 1); 
+      tempHistory.push(expression);
+      setHistory(tempHistory);
     }
   };
-  const calculateResult=(exp) =>{
-    if(!exp){
-      setResult("")
-      return};
-     const lastChar=exp.slice(-1)
-     if(!numbers.includes(lastChar))exp=exp.slice(0, -1)
+  
 
-    const answer= eval(exp).toFixed(2) + "";
-    setResult(answer)
+  const calculateResult = (exp) => {
+    if (!exp) {
+      setResult("");
+      return;
+    }
+  
+    const lastChar = exp.slice(-1);
+    if (!numbers.includes(lastChar)) exp = exp.slice(0, -1);
+  
+    try {
+      const answer = eval(exp).toFixed(2);
+      setResult(answer);
+    } catch (error) {
+      setResult("Error"); 
+    }
   };
   useEffect(()=>{
     localStorage.setItem("calculator-app-mode", JSON.stringify(isDarkMode))
@@ -81,7 +89,7 @@ function App() {
     <div className="app"
     tabIndex="0"
      onKeyDown={(event)=>handleKeyPress(event.keyCode, event.key)}
-    data-theme={isDarkMode ? 'dark' : ''}>
+    data-theme={isDarkMode ? 'dark': ''}>
       <div className='app_calculator'>
         <div className='app_calculator_navbar'>
           
